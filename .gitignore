@@ -4,7 +4,8 @@ node_modules
 # logs
 **/*.log
 
-# Nuxt generate
 dist
+
+example/lib
+
 .vscode/**
-example
