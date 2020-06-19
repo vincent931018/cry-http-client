@@ -4,8 +4,23 @@
     "description": "a httpclient for self product.  (base axios)",
     "main": "src/index.ts",
     "scripts": {
-        "build": "tsc && rollup -c",
-        "dev": "tsc && rollup -c --watch"
+        "cleanup": "rm -rf dist && rm -rf example/lib",
+        "dev": "tsc && rollup -c rollup.config.dev.js --watch",
+        "build": "tsc && rollup -c rollup.config.build.js",
+        "pre-commit": "pretty-quick --pattern 'src/**/*.*(js|ts)'",
+        "lint": "eslint --fix"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.*{js,ts,jsx}": [
+            "pretty-quick --pattern 'src/**/*.*(js|ts|jsx)' --staged",
+            "eslint --fix"
+        ]
     },
     "repository": {
         "type": "git",
