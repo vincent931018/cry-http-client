@@ -1,0 +1,58 @@
+// https://www.cnblogs.com/zaihuilou/p/9556373.html
+{
+    "compilerOptions": {
+        // 允许未执行的代码不报错
+        "allowUnreachableCode": true,
+        // 严格模式, 强烈建议开启
+        "strict": true,
+        // 支持别名导入:
+        // import * as React from "react"
+        "esModuleInterop": true,
+        // 目标js的版本
+        "target": "es5",
+        // 目标代码的模块结构版本
+        "module": "ES2015",
+        // 在表达式和声明上有隐含的 any类型时报错。
+        "noImplicitAny": true,
+        // 删除注释
+        "removeComments": true,
+        // 保留 const和 enum声明
+        "preserveConstEnums": false,
+        // 生成sourceMap    
+        "sourceMap": true,
+        // 目标文件所在路径
+        "outDir": "./dist/",
+        // 编译过程中需要引入的库文件的列表
+        "lib": [
+            "dom",
+            "es7",
+            "esnext"
+        ],
+        // 额外支持解构/forof等功能
+        "downlevelIteration": true,
+        // 是否生成声明文件
+        "declaration": true,
+        // 声明文件路径
+        "declarationDir": "./dist/",
+        // 此处设置为node,才能解析import xx from 'xx'
+        "moduleResolution": "node",
+        // 启用实验性的ES装饰器
+        "experimentalDecorators": true,
+        // 从tslib导入辅助工具函数
+        "importHelpers": true,
+        // 当this表达式的值为any类型的时候，生成一个错误
+        "noImplicitThis": true,
+        // 模块名到基于baseUrl的路径映射的列表
+        "paths": {
+            "tslib": ["node_modules/tslib/tslib.d.ts"]
+        },
+        "baseUrl": "src",
+        // 允许编译javascript文件
+        "allowJs": true,
+        // 允许从没有设置默认导出的模块中默认导入
+        "allowSyntheticDefaultImports": true,
+        // 要包含的类型声明文件路径列表
+        "typeRoots": ["./node_modules/@types", "./types"]
+    },
+    "include": ["./src"]
+}
