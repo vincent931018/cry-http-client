@@ -1,7 +1,7 @@
-import { HttpOptions, HttpCustomOptions, HttpMethodsTypes } from './httpBase';
-import { DEFAULT_HTTP_OPTIONS } from '../config/config';
-import HttpBase from './httpBase';
-import { sleep } from '../common/utils';
+import { HttpOptions, HttpCustomOptions, HttpMethodsTypes } from "./httpBase";
+import { DEFAULT_HTTP_OPTIONS } from "../config/config";
+import HttpBase from "./httpBase";
+import { sleep } from "../common/utils";
 
 let uid = 0;
 export interface HttpClientInstance {
@@ -11,40 +11,39 @@ export interface HttpClientInstance {
     customOptions: HttpCustomOptions;
 }
 
-interface HttpOptionsWithid extends HttpOptions{
+interface HttpOptionsWithid extends HttpOptions {
     id: number;
 }
 
 export default class HttpClient extends HttpBase {
-
     /**
      * httpClient 版本号
      */
-    public version: string
+    public version: string;
 
     /**
      * 当前请求中的 apis 集合
      */
-    public pendingApis: HttpOptionsWithid[]
+    public pendingApis: HttpOptionsWithid[];
 
     /**
      * 整合后的请求配置
      */
-    private clientOptions: HttpOptions
+    private clientOptions: HttpOptions;
 
     /**
      * 默认请求配置
      */
-    public defaultOptions: HttpOptions
+    public defaultOptions: HttpOptions;
 
     /**
      * 自定义的请求配置
      */
-    public customOptions: HttpCustomOptions
+    public customOptions: HttpCustomOptions;
 
     constructor(options?: HttpOptions) {
         super();
-        this.version = '__VERSION__';
+        this.version = "__VERSION__";
         this.pendingApis = [];
         this.clientOptions = DEFAULT_HTTP_OPTIONS;
         this.defaultOptions = DEFAULT_HTTP_OPTIONS;
@@ -56,7 +55,9 @@ export default class HttpClient extends HttpBase {
      * @param options 自定义请求配置参数
      */
     public create(options: HttpCustomOptions): HttpClientInstance {
-        const optionsFromat: HttpOptions = (options ? options : Object.assign({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
+        const optionsFromat: HttpOptions = (options
+            ? options
+            : Object.assign({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
         return new HttpClient(optionsFromat);
     }
 
@@ -77,9 +78,16 @@ export default class HttpClient extends HttpBase {
         return true;
     }
 
-    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-    private async doMethod(method: HttpMethodsTypes, url: string, params: object, options: HttpCustomOptions): Promise<any> {
-        const optionsFromat: HttpOptions = (options ? options : Object.assign({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    private async doMethod(
+        method: HttpMethodsTypes,
+        url: string,
+        params: object,
+        options: HttpCustomOptions
+    ): Promise<any> {
+        const optionsFromat: HttpOptions = (options
+            ? options
+            : Object.assign({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
         const apiId: number = await this.preHandle(optionsFromat);
         try {
             await super[method](url, params, optionsFromat);
@@ -89,11 +97,12 @@ export default class HttpClient extends HttpBase {
             this.pendingApis = this.pendingApis.filter(item => item.id !== apiId);
         }
     }
+    /* eslint-enable */
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     public async post(url: string, params: object, options: HttpCustomOptions): Promise<any> {
         try {
-            await this.doMethod('post', url, params, options);
+            await this.doMethod("post", url, params, options);
         } catch (error) {
             return Promise.reject(error);
         }
@@ -107,5 +116,4 @@ export default class HttpClient extends HttpBase {
             return Promise.reject(error);
         }
     }
-
 }
