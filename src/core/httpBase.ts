@@ -2,28 +2,24 @@ import axios, { AxiosInstance } from 'axios';
 
 export type HttpMethodsTypes = "get" | "post"
 
-export interface HttpHeader {
+export interface HttpHeaders {
     [key: string]: string;
 }
 
-/* eslint-disable @typescript-eslint/interface-name-prefix */
+// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IHttpClient {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     get(url: string, pramas: object, options?: HttpCustomOptions): Promise<any>;
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     post(url: string, pramas: object, options?: HttpCustomOptions): Promise<any>;
-    setBaseUrl?(baseUrl: string): boolean;
-    setTimeout?(timeout: number): boolean;
 }
 
 export interface HttpOptions {
+    timeout: number; // 接口超时时间
     method: HttpMethodsTypes; // 接口调用方法 post、get
-	showLoading: boolean; // 接口是否显示loading
+    baseURL: string; // 接口请求链接默认前缀
     delay: number; // 接口延迟调用
-	headers: HttpHeader; // 自定义请求头
-    chainStart: boolean; // 链式调用开头
-    chainFinish: boolean; // 链式调用结尾
-	effectMainProcess: boolean; // 是否关键请求 异常跳错误页
-	loadingMessage: string;
+	headers: HttpHeaders; // 自定义请求头
 }
 
 export interface AxiosOptions {
@@ -33,31 +29,12 @@ export interface AxiosOptions {
 
 export type HttpCustomOptions = Partial<HttpOptions>;
 
-const sleep = (delay: number): Promise<boolean> => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve(true);
-        }, delay)
-    })
-};
-
 export default class HttpBase implements IHttpClient{
 
     axios: AxiosInstance = axios;
 
-    public setTimeout(timeout: number): boolean {
-        this.axios.defaults.timeout = timeout;
-        return true;
-    }
-
-    public setBaseURL(baseURL: string): boolean {
-        this.axios.defaults.baseURL = baseURL;
-        return true;
-    }
-
-    /* eslint-disable @typescript-eslint/no-explicit-any */
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     public async get(url: string, params: object, options: HttpOptions): Promise<any> {
-        await sleep(options.delay);
         return new Promise((resolve, reject) => {
             this.axios.get(url, {
                 params: params,
@@ -70,8 +47,8 @@ export default class HttpBase implements IHttpClient{
         })
     }
 
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     public async post(url: string, params: object, options: HttpOptions): Promise<any> {
-        await sleep(options.delay);
         return new Promise((resolve, reject) => {
             this.axios.post(url, params, {
                 headers: options.headers
@@ -81,6 +58,11 @@ export default class HttpBase implements IHttpClient{
                 reject(e);
             })
         })
+    }
+
+    cancel(): boolean {
+        // TODO
+        return true;
     }
 
 }

@@ -84,7 +84,6 @@ module.exports = {
         "wrap-iife": [2, "any"], // 要求 IIFE 使用括号括起来
         "no-shadow": 2, // 禁止 var 声明 与外层作用域的变量同名
         "no-use-before-define": 2, // 不允许在变量定义之前使用它们
-        "no-unused-vars": [2, {"vars":"all","args":"none"}], // 禁止出现未使用过的变量
         "no-undefined": 2, // 禁止将 undefined 作为标识符
         //////////////
         // 风格指南 //

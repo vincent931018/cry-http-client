@@ -1,3 +1,5 @@
-import httpClient from './export';
+import HttpClient from './export';
+
+const httpClient = new HttpClient();
 
 export default httpClient;

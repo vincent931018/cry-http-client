@@ -1,3 +1,3 @@
-import { httpClient } from './core';
+import httpClient from './core';
 
 export default httpClient;
