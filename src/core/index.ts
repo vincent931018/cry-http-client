@@ -23,6 +23,11 @@ export default class HttpClient extends HttpBase {
     public version: string;
 
     /**
+     * httpClient 版本号
+     */
+    public debug: boolean;
+
+    /**
      * 当前请求中的 apis 集合
      */
     public pendingApis: HttpOptionsWithid[];
@@ -44,6 +49,7 @@ export default class HttpClient extends HttpBase {
 
     constructor(options: HttpOptions) {
         super();
+        this.debug = false;
         this.version = "__VERSION__";
         this.pendingApis = [];
         super.setAxiosInstance({
@@ -54,9 +60,9 @@ export default class HttpClient extends HttpBase {
         this.customOptions = options ? options : DEFAULT_HTTP_OPTIONS;
         this.defaultOptions = merger({}, DEFAULT_HTTP_OPTIONS, this.customOptions) as HttpOptions;
         this.loadingCtrl = new LoadingPlugin({
-            loadingMessage: options.loadingMessage,
-            openLoadingMethod: options.openLoadingMethod,
-            closeLoadingMethod: options.closeLoadingMethod
+            loadingMessage: this.defaultOptions.loadingMessage,
+            openLoadingMethod: this.defaultOptions.openLoadingMethod,
+            closeLoadingMethod: this.defaultOptions.closeLoadingMethod
         });
     }
 
@@ -100,13 +106,26 @@ export default class HttpClient extends HttpBase {
             : merger({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
         this.loadingCtrl.handlePreRequest(optionsFromat);
         const apiId: number = await this.preHandle(optionsFromat);
+        // eslint-disable-next-line no-console
+        this.debug &&
+            console.info(`request: ${optionsFromat.baseURL} ${url} start \n options: ${JSON.stringify(optionsFromat)}`);
         try {
-            await super[method](url, params, optionsFromat);
+            const res = await super[method](url, params, optionsFromat);
+            // eslint-disable-next-line no-console
+            this.debug &&
+                console.info(
+                    `request: ${optionsFromat.baseURL} ${url} start \n result: ${JSON.stringify(res || null)}`
+                );
         } catch (error) {
+            // eslint-disable-next-line no-console
+            this.debug &&
+                console.info(`request: ${optionsFromat.baseURL} ${url} start \n error: ${JSON.stringify(error)}`);
             return Promise.reject(error);
         } finally {
             this.pendingApis = this.pendingApis.filter(item => item.id !== apiId);
             this.loadingCtrl.handleAftrtRequest(optionsFromat);
+            // eslint-disable-next-line no-console
+            this.debug && console.info(`request: ${optionsFromat.baseURL} ${url} start \n end`);
         }
     }
     /* eslint-enable */

@@ -14,6 +14,9 @@ const httpClientInstance = httpClient.create({
 BUTTON1.addEventListener('click', () => {
     httpClientInstance.post('/name', {
         test: "test"
+    }, {
+        openLoadingMethod: () => { console.log("open loading..."); },
+        closeLoadingMethod: () => { console.log("close loading..."); }
     }).then(res => {
         console.log("res", res);
     }).catch(e => {

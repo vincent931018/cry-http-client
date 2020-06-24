@@ -75,7 +75,6 @@ module.exports = {
         "no-script-url": 2, // 禁止使用 javascript: url
         "no-self-assign": 2, // 禁止自我赋值
         "no-self-compare": 2, // 禁止自身比较
-        "no-unused-expressions": 2, // 禁止出现未使用过的表达式
         "no-unused-labels": 2, // 禁用未使用过的标签
         "no-useless-call": 2, // 禁止不必要的 .call() 和 .apply()
         "no-useless-concat": 2, // 禁止不必要的字符串字面量或模板字面量的连接

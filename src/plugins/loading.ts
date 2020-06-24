@@ -22,8 +22,8 @@ class LoadingPlugin {
         if (typeof options.openLoadingMethod !== "function" || typeof options.closeLoadingMethod !== "function") {
             throw new Error("loadingMethod must be function!");
         }
-        this.openLoadingMethod = options.openLoadingMethod || noop;
-        this.closeLoadingMethod = options.closeLoadingMethod || noop;
+        this.openLoadingMethod = options.openLoadingMethod;
+        this.closeLoadingMethod = options.closeLoadingMethod;
         this.loadingMessage = options.loadingMessage;
         this.apiCount = 0;
     }
@@ -31,7 +31,7 @@ class LoadingPlugin {
     handlePreRequest(apiOptions: HttpOptions): void {
         if (apiOptions.isShowLoading && apiOptions.openLoadingMethod) {
             this.apiCount ++;
-            this.openLoadingMethod();
+            apiOptions.openLoadingMethod();
         }
     }
 
@@ -40,7 +40,7 @@ class LoadingPlugin {
             this.apiCount --;
         }
         if (this.apiCount === 0) {
-            this.closeLoadingMethod();
+            apiOptions.closeLoadingMethod();
         }
     }
 }
