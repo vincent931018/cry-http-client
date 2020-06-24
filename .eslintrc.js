@@ -57,7 +57,6 @@ module.exports = {
         "key-spacing": [2, { "beforeColon": false, "afterColon": true }], // 对象字面量中冒号的前后空格
         "eqeqeq": 2, // 使用 === 替代 ==
         "no-alert": 2, // 禁用 alert、confirm 和 prompt
-        "no-empty-function": 2, // 禁止出现空函数.如果一个函数包含了一条注释，它将不会被认为有问题。
         "no-eq-null": 1, // 禁止在没有类型检查操作符的情况下与 null 进行比较
         "no-implicit-globals": 1, // 禁止在全局范围内使用 var 和命名的 function 声明
         "no-fallthrough": 2, // 禁止 case 语句落空

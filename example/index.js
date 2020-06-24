@@ -3,9 +3,16 @@ const BUTTON2 = document.getElementById("ajax2");
 const BUTTON3 = document.getElementById("ajax3");
 const BUTTON4 = document.getElementById("ajax4");
 
+const httpClientInstance = httpClient.create({
+    baseURL: "https://baseUrl",
+    headers: {
+        customHeader: 'customHeader'
+    }
+})
+
 // 测试接口调用
 BUTTON1.addEventListener('click', () => {
-    httpClient.post('https://path/name', {
+    httpClientInstance.post('/name', {
         test: "test"
     }).then(res => {
         console.log("res", res);
@@ -16,21 +23,21 @@ BUTTON1.addEventListener('click', () => {
 
 // 测试多个接口调用
 BUTTON2.addEventListener('click', () => {
-    httpClient.post('https://path/name', {
+    httpClientInstance.post('/name', {
         test: "test"
     }).then(res => {
         console.log("res", res);
     }).catch(e => {
         console.log("err", e);
     })
-    httpClient.post('https://path/name', {
+    httpClientInstance.post('/name', {
         test: "test"
     }).then(res => {
         console.log("res", res);
     }).catch(e => {
         console.log("err", e);
     })
-    httpClient.post('https://path/name', {
+    httpClientInstance.post('/name', {
         test: "test"
     }).then(res => {
         console.log("res", res);
@@ -41,20 +48,20 @@ BUTTON2.addEventListener('click', () => {
 
 // 测试链式接口调用
 BUTTON3.addEventListener('click', () => {
-    httpClient.post('https://path/name', {
+    httpClientInstance.post('/name', {
         test: "test"
     }, {
         chainStart: true
     }).then(res => {
-        return httpClient.post('https://path/name', {
+        return httpClientInstance.post('/name', {
             test: "test"
         });
     }).then(res => {
-        return httpClient.post('https://path/name', {
+        return httpClientInstance.post('/name', {
             test: "test"
         });
     }).then(res => {
-        return httpClient.post('https://path/name', {
+        return httpClientInstance.post('/name', {
             test: "test"
         }, {
             chainFinish: true
@@ -66,7 +73,7 @@ BUTTON3.addEventListener('click', () => {
 
 // 测试主状态异常接口调用
 BUTTON4.addEventListener('click', () => {
-    httpClient.post('https://path/name', {
+    httpClientInstance.post('/name', {
         test: "test"
     }, {
         effectMainProcess: true

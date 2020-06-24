@@ -1,7 +1,8 @@
 import { HttpOptions, HttpCustomOptions, HttpMethodsTypes } from "./httpBase";
 import { DEFAULT_HTTP_OPTIONS } from "../config/config";
 import HttpBase from "./httpBase";
-import { sleep } from "../common/utils";
+import { sleep, merger } from "../common/utils";
+import LoadingPlugin from "../plugins/loading";
 
 let uid = 0;
 export interface HttpClientInstance {
@@ -27,11 +28,6 @@ export default class HttpClient extends HttpBase {
     public pendingApis: HttpOptionsWithid[];
 
     /**
-     * 整合后的请求配置
-     */
-    private clientOptions: HttpOptions;
-
-    /**
      * 默认请求配置
      */
     public defaultOptions: HttpOptions;
@@ -41,13 +37,27 @@ export default class HttpClient extends HttpBase {
      */
     public customOptions: HttpCustomOptions;
 
-    constructor(options?: HttpOptions) {
+    /**
+     * loading控制器
+     */
+    public loadingCtrl: LoadingPlugin;
+
+    constructor(options: HttpOptions) {
         super();
         this.version = "__VERSION__";
         this.pendingApis = [];
-        this.clientOptions = DEFAULT_HTTP_OPTIONS;
-        this.defaultOptions = DEFAULT_HTTP_OPTIONS;
+        super.setAxiosInstance({
+            baseURL: options.baseURL,
+            timeout: options.timeout,
+            headers: options.headers
+        });
         this.customOptions = options ? options : DEFAULT_HTTP_OPTIONS;
+        this.defaultOptions = merger({}, DEFAULT_HTTP_OPTIONS, this.customOptions) as HttpOptions;
+        this.loadingCtrl = new LoadingPlugin({
+            loadingMessage: options.loadingMessage,
+            openLoadingMethod: options.openLoadingMethod,
+            closeLoadingMethod: options.closeLoadingMethod
+        });
     }
 
     /**
@@ -57,7 +67,7 @@ export default class HttpClient extends HttpBase {
     public create(options: HttpCustomOptions): HttpClientInstance {
         const optionsFromat: HttpOptions = (options
             ? options
-            : Object.assign({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
+            : merger({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
         return new HttpClient(optionsFromat);
     }
 
@@ -65,9 +75,9 @@ export default class HttpClient extends HttpBase {
     public async preHandle(options: HttpOptions): Promise<number> {
         const sleepVal = options.delay;
         const id = uid ++;
-        const httpOptionsWithUid: HttpOptionsWithid = Object.assign({}, options, {
+        const httpOptionsWithUid: HttpOptionsWithid = merger({}, options, {
             id
-        });
+        }) as HttpOptionsWithid;
         this.pendingApis.push(httpOptionsWithUid);
         await sleep(sleepVal);
         return id;
@@ -87,7 +97,8 @@ export default class HttpClient extends HttpBase {
     ): Promise<any> {
         const optionsFromat: HttpOptions = (options
             ? options
-            : Object.assign({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
+            : merger({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
+        this.loadingCtrl.handlePreRequest(optionsFromat);
         const apiId: number = await this.preHandle(optionsFromat);
         try {
             await super[method](url, params, optionsFromat);
@@ -95,6 +106,7 @@ export default class HttpClient extends HttpBase {
             return Promise.reject(error);
         } finally {
             this.pendingApis = this.pendingApis.filter(item => item.id !== apiId);
+            this.loadingCtrl.handleAftrtRequest(optionsFromat);
         }
     }
     /* eslint-enable */
@@ -110,6 +122,42 @@ export default class HttpClient extends HttpBase {
 
     // eslint-disable-next-line  @typescript-eslint/no-explicit-any
     public async get(url: string, params: object, options: HttpCustomOptions): Promise<any> {
+        try {
+            await this.doMethod("get", url, params, options);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    public async head(url: string, params: object, options: HttpCustomOptions): Promise<any> {
+        try {
+            await this.doMethod("get", url, params, options);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    public async delete(url: string, params: object, options: HttpCustomOptions): Promise<any> {
+        try {
+            await this.doMethod("get", url, params, options);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    public async put(url: string, params: object, options: HttpCustomOptions): Promise<any> {
+        try {
+            await this.doMethod("get", url, params, options);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    }
+
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    public async patch(url: string, params: object, options: HttpCustomOptions): Promise<any> {
         try {
             await this.doMethod("get", url, params, options);
         } catch (error) {
