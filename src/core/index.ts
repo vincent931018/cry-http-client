@@ -47,6 +47,13 @@ export default class HttpClient extends HttpBase {
      */
     public loadingCtrl: LoadingPlugin;
 
+    /**
+     * 对原型扩展 方便功能新增
+     */
+    static extend(): void {
+        // TODO
+    }
+
     constructor(options: HttpOptions) {
         super();
         this.debug = false;
@@ -106,20 +113,18 @@ export default class HttpClient extends HttpBase {
             : merger({}, options, DEFAULT_HTTP_OPTIONS)) as HttpOptions;
         this.loadingCtrl.handlePreRequest(optionsFromat);
         const apiId: number = await this.preHandle(optionsFromat);
-        // eslint-disable-next-line no-console
         this.debug &&
+            // eslint-disable-next-line no-console
             console.info(`request: ${optionsFromat.baseURL} ${url} start \n options: ${JSON.stringify(optionsFromat)}`);
         try {
             const res = await super[method](url, params, optionsFromat);
-            // eslint-disable-next-line no-console
             this.debug &&
-                console.info(
-                    `request: ${optionsFromat.baseURL} ${url} start \n result: ${JSON.stringify(res || null)}`
-                );
+                // eslint-disable-next-line no-console
+                console.info(`request: ${optionsFromat.baseURL} ${url} \n result: ${JSON.stringify(res || null)}`);
         } catch (error) {
-            // eslint-disable-next-line no-console
             this.debug &&
-                console.info(`request: ${optionsFromat.baseURL} ${url} start \n error: ${JSON.stringify(error)}`);
+                // eslint-disable-next-line no-console
+                console.info(`request: ${optionsFromat.baseURL} ${url} \n error: ${JSON.stringify(error)}`);
             return Promise.reject(error);
         } finally {
             this.pendingApis = this.pendingApis.filter(item => item.id !== apiId);

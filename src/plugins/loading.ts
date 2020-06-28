@@ -6,9 +6,6 @@ export interface LoadingOption {
     loadingMessage: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop: Function = (): void => {};
-
 class LoadingPlugin {
     public openLoadingMethod: Function;
 
@@ -29,9 +26,9 @@ class LoadingPlugin {
     }
 
     handlePreRequest(apiOptions: HttpOptions): void {
-        if (apiOptions.isShowLoading && apiOptions.openLoadingMethod) {
+        if (apiOptions.isShowLoading) {
             this.apiCount ++;
-            apiOptions.openLoadingMethod();
+            apiOptions.openLoadingMethod ? apiOptions.openLoadingMethod() : this.openLoadingMethod();
         }
     }
 
@@ -40,7 +37,7 @@ class LoadingPlugin {
             this.apiCount --;
         }
         if (this.apiCount === 0) {
-            apiOptions.closeLoadingMethod();
+            apiOptions.closeLoadingMethod ? apiOptions.closeLoadingMethod() : this.closeLoadingMethod;
         }
     }
 }
